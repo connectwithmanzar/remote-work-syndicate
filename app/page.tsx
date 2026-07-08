@@ -16,6 +16,7 @@ import { getLatestGuides } from "@/lib/data/guides";
 import { getFeaturedJobs } from "@/lib/data/jobs";
 import { getFeaturedPlatforms } from "@/lib/data/platforms";
 import { organizationSchema, websiteSchema } from "@/lib/seo/schema";
+import { NewsletterForm } from "@/components/forms/newsletter-form";
 
 const stats = [
   {
@@ -258,6 +259,12 @@ export default function Home() {
           </div>
         </Container>
       </Section>
+    
+      <section className="border-t border-slate-200 bg-slate-50 py-16">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <NewsletterForm source="homepage" />
+        </div>
+      </section>
     </main>
   );
 }
