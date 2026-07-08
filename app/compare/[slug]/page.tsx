@@ -4,9 +4,11 @@ import { ArrowLeft, ArrowRight, CheckCircle2, GitCompare, Sparkles } from "lucid
 
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getComparisonBySlug, getComparisons } from "@/lib/data/comparisons";
 import { getJobsByPlatform } from "@/lib/data/jobs";
 import { getPlatformBySlug } from "@/lib/data/platforms";
+import { breadcrumbListSchema, comparisonPageSchema } from "@/lib/seo/schema";
 
 type CompareDetailPageProps = {
   params: Promise<{
@@ -55,8 +57,18 @@ export default async function CompareDetailPage({ params }: CompareDetailPagePro
     .map((platformSlug) => getPlatformBySlug(platformSlug))
     .filter((platform) => platform !== undefined);
 
+  const structuredData = [
+    comparisonPageSchema(comparison),
+    breadcrumbListSchema([
+      { name: "Home", path: "/" },
+      { name: "Compare", path: "/compare" },
+      { name: comparison.title, path: `/compare/${comparison.slug}` },
+    ]),
+  ];
+
   return (
     <main>
+      <JsonLd data={structuredData} />
       <Section className="border-b">
         <Container>
           <Link
