@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 
+import { QuizForm } from "@/components/forms/quiz-form";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { getFeaturedPlatforms } from "@/lib/data/platforms";
@@ -88,6 +89,13 @@ export default function QuizPage() {
               </ul>
             </aside>
           </div>
+        </Container>
+      </Section>
+
+
+      <Section className="border-b bg-muted/20">
+        <Container>
+          <QuizForm />
         </Container>
       </Section>
 
