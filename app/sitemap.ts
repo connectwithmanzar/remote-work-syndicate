@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/guides",
     "/compare",
     "/quiz",
+    "/submit-outcome",
     "/referral-disclosure",
     "/privacy",
     "/terms",

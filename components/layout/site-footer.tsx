@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/container";
 
 const footerLinks = [
+  { label: "Submit outcome", href: "/submit-outcome" },
   { label: "Referral disclosure", href: "/referral-disclosure" },
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },
