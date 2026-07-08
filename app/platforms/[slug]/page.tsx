@@ -4,8 +4,10 @@ import { ArrowLeft, ArrowRight, CheckCircle2, ShieldCheck } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getJobsByPlatform } from "@/lib/data/jobs";
 import { getPlatformBySlug, getPlatforms } from "@/lib/data/platforms";
+import { breadcrumbListSchema } from "@/lib/seo/schema";
 
 type PlatformDetailPageProps = {
   params: Promise<{
@@ -52,8 +54,15 @@ export default async function PlatformDetailPage({ params }: PlatformDetailPageP
 
   const jobs = getJobsByPlatform(platform.slug);
 
+  const structuredData = breadcrumbListSchema([
+    { name: "Home", path: "/" },
+    { name: "Platforms", path: "/platforms" },
+    { name: platform.name, path: `/platforms/${platform.slug}` },
+  ]);
+
   return (
     <main>
+      <JsonLd data={structuredData} />
       <Section className="border-b">
         <Container>
           <Link
