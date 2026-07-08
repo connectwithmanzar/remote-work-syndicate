@@ -4,8 +4,10 @@ import { ArrowLeft, ArrowRight, CheckCircle2, ExternalLink, ShieldCheck } from "
 
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getJobBySlug, getJobs } from "@/lib/data/jobs";
 import { getPlatformBySlug } from "@/lib/data/platforms";
+import { breadcrumbListSchema, jobPostingSchema } from "@/lib/seo/schema";
 
 type JobDetailPageProps = {
   params: Promise<{
@@ -54,8 +56,18 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
 
   const platform = getPlatformBySlug(job.platformSlug);
 
+  const structuredData = [
+    jobPostingSchema(job, platform),
+    breadcrumbListSchema([
+      { name: "Home", path: "/" },
+      { name: "Jobs", path: "/jobs" },
+      { name: job.title, path: `/jobs/${job.slug}` },
+    ]),
+  ];
+
   return (
     <main>
+      <JsonLd data={structuredData} />
       <Section className="border-b">
         <Container>
           <Link
