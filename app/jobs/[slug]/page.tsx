@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle2, ExternalLink, ShieldCheck } from "lucide-react";
 
+import { TrackedApplyLink } from "@/components/actions/tracked-apply-link";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -149,15 +150,17 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
                 </div>
               </dl>
 
-              <a
-                href={job.applyUrl}
-                target="_blank"
-                rel="noreferrer"
+              <TrackedApplyLink
+                destinationUrl={job.applyUrl}
+                platformSlug={job.platformSlug}
+                jobSlug={job.slug}
+                referralAvailable={job.referralAvailable}
+                sourcePage={`/jobs/${job.slug}`}
                 className="mt-6 inline-flex h-11 w-full items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
               >
                 Apply on {platform?.name ?? "platform"}
                 <ExternalLink className="ml-2 size-4" />
-              </a>
+              </TrackedApplyLink>
 
               <p className="mt-4 text-xs leading-5 text-muted-foreground">
                 Apply links may be tracked for product analytics. If a referral link is available,
