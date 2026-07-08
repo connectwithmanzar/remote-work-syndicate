@@ -10,10 +10,12 @@ import {
 
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getPopularComparisons } from "@/lib/data/comparisons";
 import { getLatestGuides } from "@/lib/data/guides";
 import { getFeaturedJobs } from "@/lib/data/jobs";
 import { getFeaturedPlatforms } from "@/lib/data/platforms";
+import { organizationSchema, websiteSchema } from "@/lib/seo/schema";
 
 const stats = [
   {
@@ -45,9 +47,11 @@ export default function Home() {
   const featuredJobs = getFeaturedJobs(3);
   const latestGuides = getLatestGuides(3);
   const popularComparisons = getPopularComparisons(2);
+  const structuredData = [organizationSchema(), websiteSchema()];
 
   return (
     <main className="min-h-screen bg-background text-foreground">
+      <JsonLd data={structuredData} />
       <section className="relative overflow-hidden border-b px-6 py-24 sm:py-32">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(79,140,255,0.24),transparent_35%),radial-gradient(circle_at_top_right,rgba(139,92,246,0.20),transparent_30%)]" />
 
