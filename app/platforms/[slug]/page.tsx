@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle2, ShieldCheck } from "lucide-react";
 
+import { TrackedApplyLink } from "@/components/actions/tracked-apply-link";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -135,15 +136,16 @@ export default async function PlatformDetailPage({ params }: PlatformDetailPageP
                 </div>
               </dl>
 
-              <a
-                href={platform.websiteUrl}
-                target="_blank"
-                rel="noreferrer"
+              <TrackedApplyLink
+                destinationUrl={platform.websiteUrl}
+                platformSlug={platform.slug}
+                referralAvailable={platform.referralStatus === "available" || platform.referralStatus === "partner_only"}
+                sourcePage={`/platforms/${platform.slug}`}
                 className="mt-6 inline-flex h-11 w-full items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
               >
                 Visit {platform.name}
                 <ArrowRight className="ml-2 size-4" />
-              </a>
+              </TrackedApplyLink>
 
               <p className="mt-4 text-xs leading-5 text-muted-foreground">
                 Some links may become referral links where available. Recommendations should not be based only on referral payouts.
