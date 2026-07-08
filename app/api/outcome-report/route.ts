@@ -1,36 +1,7 @@
-import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
+import { errorResponse, successResponse } from "@/lib/api/responses";
 import { outcomeReportSchema } from "@/lib/validation/outcome-report";
-
-type ApiErrorCode = "VALIDATION_ERROR" | "INTERNAL_ERROR";
-
-function successResponse(data: unknown, message?: string) {
-  return NextResponse.json({
-    success: true,
-    data,
-    message,
-  });
-}
-
-function errorResponse(
-  code: ApiErrorCode,
-  message: string,
-  details?: unknown,
-  status = 400,
-) {
-  return NextResponse.json(
-    {
-      success: false,
-      error: {
-        code,
-        message,
-        details,
-      },
-    },
-    { status },
-  );
-}
 
 export async function POST(request: Request) {
   try {
