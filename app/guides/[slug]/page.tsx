@@ -4,7 +4,9 @@ import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2 } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getGuideBySlug, getGuides } from "@/lib/data/guides";
+import { articleSchema, breadcrumbListSchema } from "@/lib/seo/schema";
 
 type GuideDetailPageProps = {
   params: Promise<{
@@ -42,8 +44,18 @@ export default async function GuideDetailPage({ params }: GuideDetailPageProps) 
     notFound();
   }
 
+  const structuredData = [
+    articleSchema(guide),
+    breadcrumbListSchema([
+      { name: "Home", path: "/" },
+      { name: "Guides", path: "/guides" },
+      { name: guide.title, path: `/guides/${guide.slug}` },
+    ]),
+  ];
+
   return (
     <main>
+      <JsonLd data={structuredData} />
       <Section className="border-b">
         <Container>
           <Link
