@@ -1,22 +1,25 @@
+import { createHash } from "crypto";
+
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
+
 type RateLimitOptions = {
   namespace: string;
   limit: number;
   windowMs: number;
 };
 
-type RateLimitBucket = {
-  count: number;
-  resetAt: number;
-};
-
 type RateLimitResult = {
   allowed: boolean;
   limit: number;
   remaining: number;
-  resetAt: number;
+  resetAt: string;
 };
 
-const buckets = new Map<string, RateLimitBucket>();
+type SupabaseRateLimitRow = {
+  allowed: boolean;
+  remaining: number;
+  reset_at: string;
+};
 
 function getClientIp(request: Request) {
   const forwardedFor = request.headers.get("x-forwarded-for");
@@ -32,56 +35,42 @@ function getClientIp(request: Request) {
   );
 }
 
-function cleanExpiredBuckets(now: number) {
-  for (const [key, bucket] of buckets.entries()) {
-    if (bucket.resetAt <= now) {
-      buckets.delete(key);
-    }
-  }
+function hashIdentifier(identifier: string) {
+  return createHash("sha256").update(identifier).digest("hex");
 }
 
-export function checkRateLimit(
+export async function checkRateLimit(
   request: Request,
   options: RateLimitOptions,
-): RateLimitResult {
-  const now = Date.now();
-
-  cleanExpiredBuckets(now);
-
+): Promise<RateLimitResult> {
+  const supabase = getSupabaseAdmin();
   const clientIp = getClientIp(request);
-  const key = `${options.namespace}:${clientIp}`;
-  const existingBucket = buckets.get(key);
+  const identifierHash = hashIdentifier(clientIp);
+  const windowSeconds = Math.ceil(options.windowMs / 1000);
 
-  if (!existingBucket || existingBucket.resetAt <= now) {
-    buckets.set(key, {
-      count: 1,
-      resetAt: now + options.windowMs,
-    });
+  const { data, error } = await supabase.rpc("check_api_rate_limit", {
+    p_namespace: options.namespace,
+    p_identifier_hash: identifierHash,
+    p_limit: options.limit,
+    p_window_seconds: windowSeconds,
+  });
 
-    return {
-      allowed: true,
-      limit: options.limit,
-      remaining: options.limit - 1,
-      resetAt: now + options.windowMs,
-    };
+  if (error) {
+    throw new Error(`Rate limit check failed: ${error.message}`);
   }
 
-  if (existingBucket.count >= options.limit) {
-    return {
-      allowed: false,
-      limit: options.limit,
-      remaining: 0,
-      resetAt: existingBucket.resetAt,
-    };
-  }
+  const result = Array.isArray(data)
+    ? (data[0] as SupabaseRateLimitRow | undefined)
+    : (data as SupabaseRateLimitRow | undefined);
 
-  existingBucket.count += 1;
-  buckets.set(key, existingBucket);
+  if (!result) {
+    throw new Error("Rate limit check returned no result.");
+  }
 
   return {
-    allowed: true,
+    allowed: result.allowed,
     limit: options.limit,
-    remaining: options.limit - existingBucket.count,
-    resetAt: existingBucket.resetAt,
+    remaining: result.remaining,
+    resetAt: result.reset_at,
   };
 }
