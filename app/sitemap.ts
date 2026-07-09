@@ -5,7 +5,7 @@ import { getGuides } from "@/lib/data/guides";
 import { getJobs } from "@/lib/data/jobs";
 import { getPlatforms } from "@/lib/data/platforms";
 
-const siteUrl = "https://remoteworksyndicate.com";
+const siteUrl = "https://www.remoteworksyndicate.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [

@@ -950,7 +950,7 @@ Requires authentication later.
 Recommended environment variables:
 
 ```text
-NEXT_PUBLIC_SITE_URL=https://remoteworksyndicate.com
+NEXT_PUBLIC_SITE_URL=https://www.remoteworksyndicate.com
 
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=

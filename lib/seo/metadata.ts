@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import type { Comparison, Guide, Job, Platform } from "@/lib/data/types";
 
 const siteName = "Remote Work Syndicate";
-const siteUrl = "https://remoteworksyndicate.com";
+const siteUrl = "https://www.remoteworksyndicate.com";
 
 function absoluteUrl(path: string) {
   return `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;

@@ -1,6 +1,6 @@
 import type { Comparison, Guide, Job, Platform } from "@/lib/data/types";
 
-const siteUrl = "https://remoteworksyndicate.com";
+const siteUrl = "https://www.remoteworksyndicate.com";
 
 export type JsonLdObject = Record<string, unknown>;
 
