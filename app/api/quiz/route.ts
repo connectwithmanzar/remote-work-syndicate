@@ -2,6 +2,7 @@ import { ZodError } from "zod";
 
 import { errorResponse, successResponse } from "@/lib/api/responses";
 import { getFeaturedPlatforms } from "@/lib/data/platforms";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { quizSchema } from "@/lib/validation/quiz";
 
 export async function POST(request: Request) {
@@ -25,8 +26,41 @@ export async function POST(request: Request) {
       suggestedRoles: platform.bestFor,
     }));
 
+    const supabase = getSupabaseAdmin();
+
+    const { data, error } = await supabase
+      .from("quiz_submissions")
+      .insert({
+        country: input.country,
+        primary_skill_category: input.primarySkillCategory,
+        years_of_experience: input.yearsOfExperience,
+        english_level: input.englishLevel,
+        coding_ability: input.codingAbility,
+        domain_expertise: input.domainExpertise || null,
+        preferred_work_type: input.preferredWorkType,
+        available_hours_per_week: input.availableHoursPerWeek,
+        desired_pay_min: input.desiredPayMin ?? null,
+        platforms_already_applied_to: input.platformsAlreadyAppliedTo ?? [],
+        current_application_outcomes: input.currentApplicationOutcomes ?? [],
+        email: input.email || null,
+        consent_to_subscribe: input.consentToSubscribe ?? false,
+        recommendations,
+      })
+      .select("id,created_at")
+      .single();
+
+    if (error) {
+      return errorResponse(
+        "INTERNAL_ERROR",
+        "Something went wrong while saving quiz results.",
+        error.message,
+        500,
+      );
+    }
+
     return successResponse(
       {
+        id: data.id,
         recommendations,
         submittedProfile: {
           country: input.country,
@@ -38,6 +72,7 @@ export async function POST(request: Request) {
           availableHoursPerWeek: input.availableHoursPerWeek,
         },
         subscribed: Boolean(input.email && input.consentToSubscribe),
+        createdAt: data.created_at,
       },
       "Quiz submitted successfully.",
     );
