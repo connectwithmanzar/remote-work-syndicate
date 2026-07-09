@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 export type ApiErrorCode =
   | "VALIDATION_ERROR"
   | "DUPLICATE_RECORD"
+  | "RATE_LIMITED"
   | "INTERNAL_ERROR";
 
 export function successResponse(data: unknown, message?: string) {
