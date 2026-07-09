@@ -1,11 +1,31 @@
 import { ZodError } from "zod";
 
+import { checkRateLimit } from "@/lib/api/rate-limit";
 import { errorResponse, successResponse } from "@/lib/api/responses";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { applyClickSchema } from "@/lib/validation/apply-click";
 
 export async function POST(request: Request) {
   try {
+    const rateLimit = await checkRateLimit(request, {
+      namespace: "track-apply-click",
+      limit: 30,
+      windowMs: 60 * 1000,
+    });
+
+    if (!rateLimit.allowed) {
+      return errorResponse(
+        "RATE_LIMITED",
+        "Too many apply-click tracking requests. Please try again in a minute.",
+        {
+          limit: rateLimit.limit,
+          remaining: rateLimit.remaining,
+          resetAt: rateLimit.resetAt,
+        },
+        429,
+      );
+    }
+
     const body = await request.json();
     const input = applyClickSchema.parse(body);
 
