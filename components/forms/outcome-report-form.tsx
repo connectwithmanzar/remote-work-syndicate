@@ -11,7 +11,8 @@ export function OutcomeReportForm() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
     setStatus("loading");
     setMessage("");
@@ -48,7 +49,7 @@ export function OutcomeReportForm() {
         );
       }
 
-      event.currentTarget.reset();
+      form.reset();
       setStatus("success");
       setMessage(result.message ?? "Outcome report submitted.");
     } catch (error) {
